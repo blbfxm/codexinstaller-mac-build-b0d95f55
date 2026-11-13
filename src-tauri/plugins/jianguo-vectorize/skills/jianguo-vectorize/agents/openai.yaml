@@ -1,0 +1,4 @@
+interface:
+  display_name: "位图转矢量图"
+  short_description: "使用当前坚果 API Key，将本机位图转换成 SVG 矢量图，查询进度并保存结果。"
+  default_prompt: "使用 $jianguo-vectorize，将项目中的 logo.png 转成 SVG 矢量图。"

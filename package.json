@@ -1,0 +1,27 @@
+{
+  "name": "codexinstaller",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "v2rayn:runtime:win": "powershell -ExecutionPolicy Bypass -File scripts/build-v2rayn-runtime.ps1 -RuntimeIdentifier win-x64",
+    "v2rayn:runtime:mac:x64": "pwsh -File scripts/build-v2rayn-runtime.ps1 -RuntimeIdentifier osx-x64",
+    "v2rayn:runtime:mac:arm64": "pwsh -File scripts/build-v2rayn-runtime.ps1 -RuntimeIdentifier osx-arm64",
+    "portable:win": "npm run v2rayn:runtime:win && tauri build && powershell -ExecutionPolicy Bypass -File scripts/package-portable-win.ps1",
+    "portable:mac": "sh scripts/package-portable-mac.sh"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "lucide": "^1.62.0",
+    "qrcode-generator": "^2.0.4"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16"
+  }
+}

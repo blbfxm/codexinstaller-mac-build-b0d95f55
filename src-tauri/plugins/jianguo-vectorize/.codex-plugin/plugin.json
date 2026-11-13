@@ -1,0 +1,17 @@
+{
+  "name": "jianguo-vectorize",
+  "version": "1.0.0",
+  "description": "使用当前坚果 API Key，将本机位图转换为 SVG 矢量图。",
+  "author": { "name": "坚果" },
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "位图转矢量图",
+    "shortDescription": "将 PNG、JPEG、WebP 转为 SVG 并保存到本机",
+    "longDescription": "绑定 Codex 使用助手当前账户的坚果 API Key，通过 AI 专业转矢量服务生成 SVG。支持任务进度查询与本机保存，转换按平台价格扣点。",
+    "developerName": "坚果",
+    "category": "Creativity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": ["用位图转矢量图插件，将项目中的 logo.png 转为 SVG。"]
+  }
+}

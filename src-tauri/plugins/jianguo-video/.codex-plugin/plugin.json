@@ -1,0 +1,17 @@
+{
+  "name": "jianguo-video",
+  "version": "1.0.0",
+  "description": "使用当前坚果 API Key，通过用户指定的视频模型生成 MP4 视频。",
+  "author": { "name": "坚果" },
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "文生视频",
+    "shortDescription": "指定模型，生成横屏或竖屏视频并保存到本机",
+    "longDescription": "使用助手中绑定的坚果 API Key，支持 MiniMax H3、Agnes Video 2.5 和 Wan 3.0。可选择横屏或竖屏、分辨率与时长，生成完成后将 MP4 保存到本机。视频生成按秒计费。",
+    "developerName": "坚果",
+    "category": "Creativity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": ["用文生视频插件，使用 wan-3.0 模型生成一段 6 秒的横屏产品展示视频。"]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "jianguo-image",
+  "version": "1.0.0",
+  "description": "使用坚果 API，通过用户指定的生图模型生成或编辑图片。",
+  "author": { "name": "坚果" },
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "文生图",
+    "shortDescription": "指定模型，生成图片或使用参考图创作",
+    "longDescription": "使用助手中绑定的坚果 API Key，支持文生图、参考图、比例、分辨率与透明背景。请在对话中指定生图模型；生成按坚果平台模型价格计费。",
+    "developerName": "坚果",
+    "category": "Creativity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": ["用文生图插件，使用 nano-banana-2 模型生成一张产品海报。"]
+  }
+}
