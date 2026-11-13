@@ -29,12 +29,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download source-snapshot \
+          gh release download source-snapshot-2 \
             --repo "$GITHUB_REPOSITORY" \
-            --pattern codexinstaller-mac-source-82299bf.tar.gz \
+            --pattern codexinstaller-mac-source-8a09b62.tar.gz \
             --output "$RUNNER_TEMP/source.tar.gz" \
             --clobber
-          echo "e30ac8d23b0afd9e8f5aa2410ba4d486c13a8c0cd2f8aae8302b7581f0b11137  $RUNNER_TEMP/source.tar.gz" | shasum -a 256 -c -
+          echo "f894f5f0a14528bb3cc1da96b7239c963f1aee3f39a2b568148f091fb221b90b  $RUNNER_TEMP/source.tar.gz" | shasum -a 256 -c -
           tar -xzf "$RUNNER_TEMP/source.tar.gz" -C "$GITHUB_WORKSPACE"
       - uses: actions/setup-node@v4
         with:
