@@ -1,0 +1,89 @@
+name: macOS Test Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      architecture:
+        description: Mac architecture to build
+        type: choice
+        default: Both
+        options:
+          - Both
+          - Apple-Silicon
+          - Intel
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: macOS ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ${{ fromJSON(inputs.architecture == 'Both' && '["Apple-Silicon","Intel"]' || format('["{0}"]', inputs.architecture)) }}
+    runs-on: ${{ matrix.arch == 'Intel' && 'macos-15-intel' || 'macos-15' }}
+    timeout-minutes: 60
+    steps:
+      - name: Download source snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download source-snapshot \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern codexinstaller-mac-source-82299bf.tar.gz \
+            --output "$RUNNER_TEMP/source.tar.gz" \
+            --clobber
+          echo "e30ac8d23b0afd9e8f5aa2410ba4d486c13a8c0cd2f8aae8302b7581f0b11137  $RUNNER_TEMP/source.tar.gz" | shasum -a 256 -c -
+          tar -xzf "$RUNNER_TEMP/source.tar.gz" -C "$GITHUB_WORKSPACE"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install Rust
+        run: rustup update stable --no-self-update && rustup default stable
+      - name: Restore Rust build cache
+        id: rust-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: rust-${{ matrix.arch }}-${{ hashFiles('src-tauri/Cargo.lock') }}-${{ github.sha }}
+          restore-keys: |
+            rust-${{ matrix.arch }}-${{ hashFiles('src-tauri/Cargo.lock') }}-
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Build native proxy runtime
+        shell: pwsh
+        env:
+          NUGET_SOURCE: https://api.nuget.org/v3/index.json
+        run: ./scripts/build-v2rayn-runtime.ps1 -RuntimeIdentifier '${{ matrix.arch == 'Intel' && 'osx-x64' || 'osx-arm64' }}'
+      - name: Test native code
+        run: cargo test --manifest-path src-tauri/Cargo.toml --lib
+      - name: Package app and DMG
+        run: sh scripts/package-portable-mac.sh
+      - name: Verify app signature
+        run: codesign --verify --deep --strict --verbose=2 "src-tauri/target/release/bundle/macos/Codex 使用助手.app"
+      - name: Save Rust build cache
+        if: always() && steps.rust-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: rust-${{ matrix.arch }}-${{ hashFiles('src-tauri/Cargo.lock') }}-${{ github.sha }}
+      - name: Upload test packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: Codex-macOS-${{ matrix.arch }}
+          path: |
+            dist-portable/*.dmg
+            dist-portable/*.zip
+          if-no-files-found: error
+          retention-days: 7
